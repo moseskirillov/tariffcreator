@@ -1,0 +1,32 @@
+package com.fmlogistic.tariffcreator.models.generator.downtime;
+
+import com.fmlogistic.tariffcreator.models.generator.BaseModel;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
+@Getter
+@Setter
+public class ForwardingFTL extends BaseModel {
+
+    public ForwardingFTL(
+            String clientName,
+            String dateFrom,
+            String dateTo,
+            String activity,
+            String tariffCode,
+            String description,
+            List<ForwardingFTLRow> rows) {
+        super(clientName, dateFrom, dateTo);
+        this.activity = activity;
+        this.tariffCode = tariffCode;
+        this.description = description;
+        this.rows = rows;
+    }
+
+    private String activity;
+    private String tariffCode;
+    private String description;
+    private List<ForwardingFTLRow> rows;
+}

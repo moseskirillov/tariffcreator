@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+build:
+  stage: build
+  variables:
+    GIT_STRATEGY: clone
+  tags:
+    - build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE/tariff-creator-docker:latest .
+    - docker push $CI_REGISTRY_IMAGE/tariff-creator-docker:latest
+  when: manual
+deploy:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: clone
+    KUBE_NAMESPACE: lsc-team
+  script:
+    - export KUBECONFIG=${KUBE2_KUBECONFIG}
+    - kubectl rollout restart deployment dep-tariff-creator --namespace=$KUBE_NAMESPACE
+  except:
+    variables:
+      - $CI_PIPELINE_IID == '1'
+  when: on_success
+  needs: ["build"]
